@@ -77,13 +77,6 @@ COPY shiro.ini $FUSEKI_HOME/shiro.ini
 COPY docker-entrypoint.sh /
 RUN chmod 755 /docker-entrypoint.sh
 
-
-COPY load.sh $FUSEKI_HOME/
-COPY tdbloader $FUSEKI_HOME/
-RUN chmod 755 $FUSEKI_HOME/load.sh $FUSEKI_HOME/tdbloader
-#VOLUME /staging
-
-
 # Where we start our server from
 WORKDIR $FUSEKI_HOME
 EXPOSE 3030
