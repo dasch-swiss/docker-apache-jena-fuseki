@@ -8,9 +8,6 @@ dasch-swiss/apache-jena-fuseki
 
 Note that although these Docker images are based on the official Apache Jena Fuseki releases and do not alter them in any way, they do not constitute official releases from the Apache Software Foundation.
 
-## Building
-docker build -t apache-jena-fuseki .
-
 ## Dockerfile overview
 The Dockerfile uses the official openjdk:11-jre-slim-buster base image, which is based on the [debian](https://hub.docker.com/_/debian/):buster-slim image; this clocks in at about 69 MB.
 
@@ -23,3 +20,6 @@ To minimize layer size, there's a single RUN with curl, sha512sum, tar zxf and m
 Some files from the Apache Jena distributions are stripped, e.g., fuseki.war file.
 
 The Fuseki image includes some helper scripts to do tdb loading using fuseki-server.jar. In addition Fuseki has a [docker-entrypoint.sh](https://github.com/dasch-swiss/docker-apache-jena-fuseki/blob/main/docker-entrypoint.sh) that populates shiro.ini with the password provided as -e ADMIN_PASSWORD to Docker, or with a new randomly generated password that is printed the first time.
+
+## Releasing
+Releasing should be done through the Github release process, which will kick-off a Github-CI job that will release the Docker Image under the release tag.

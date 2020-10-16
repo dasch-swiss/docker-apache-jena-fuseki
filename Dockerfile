@@ -13,9 +13,9 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+# Credits: Mainly copied from https://github.com/stain/jena-docker
 
 FROM openjdk:11-jre-slim-buster
-MAINTAINER Stian Soiland-Reyes <stain@apache.org>
 
 ENV LANG C.UTF-8
 RUN set -eux; \
@@ -28,8 +28,8 @@ RUN set -eux; \
 
 # Update below according to https://jena.apache.org/download/ 
 # and checksum for apache-jena-3.x.x.tar.gz.sha512
-ENV FUSEKI_SHA512 62ac07f70c65a77fb90127635fa82f719fd5f4f10339c32702ebd664227d78f7414233d69d5b73f25b033f2fdea37b8221ea498755697eea3c1344819e4a527e
-ENV FUSEKI_VERSION 3.14.0
+ENV FUSEKI_SHA512 17a4c172eb0dc22d1cec71c795c395041fa6dc32be1da8525368abf1e0da51aaaf414c1eca6687b20753d9b4413e0cdc927cff2d5821baedce5e75c762050358
+ENV FUSEKI_VERSION 3.16.0
 # No need for https due to sha512 checksums below
 ENV ASF_MIRROR http://www.apache.org/dyn/mirrors/mirrors.cgi?action=download&filename=
 ENV ASF_ARCHIVE http://archive.apache.org/dist/
