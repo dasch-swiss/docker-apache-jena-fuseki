@@ -6,14 +6,23 @@ CURRENT_DIR := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 
 include vars.mk
 
-.PHONY: build
-build: ## build Docker image locally
-	docker build -t $(APACHE_JENA_FUSEKI_IMAGE) .
-	docker tag $(APACHE_JENA_FUSEKI_IMAGE) $(APACHE_JENA_FUSEKI_REPO):latest
+.PHONY: build-and-push
+build-and-push: ## build and push multiplatform Docker image to Docker Hub
+	# linux/amd64 (e.g., intel), linux/arm64/v8 (e.g., Apple Silicon), linux/arm/v7 (e.g., Raspberry Pi)
+	docker buildx build --platform linux/amd64,linux/arm64/v8,linux/arm/v7 -t $(DOCKER_IMAGE) -t $(DOCKER_REPO):latest --push .
 
-.PHONY: publish
-publish: build ## publish Docker image to Docker-Hub
-	docker push $(APACHE_JENA_FUSEKI_REPO)
+.PHONY: build-amd64
+build-amd64: ## build linux_amd64 Docker image locally
+	docker buildx build --platform linux/amd64 -t $(DOCKER_IMAGE) -t $(DOCKER_REPO):latest --load .
+
+.PHONY: build-arm64
+build-arm64: ## build linux_arm64 Docker image locally
+	docker buildx build --platform linux/arm64/v8 -t $(DOCKER_IMAGE) -t $(DOCKER_REPO):latest --load .
+
+.PHONY: build-armv7
+build-armv7: ## build linux_arm_v7 Docker image locally
+	docker buildx build --platform linux/arm/v7 -t $(DOCKER_IMAGE) -t $(DOCKER_REPO):latest --load .
+
 
 .PHONY: help
 help: ## this help

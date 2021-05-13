@@ -15,7 +15,7 @@
 
 # Credits: Mainly copied from https://github.com/stain/jena-docker
 
-FROM openjdk:11-jre-slim-buster
+FROM adoptopenjdk:11-jre-hotspot
 
 ENV LANG C.UTF-8
 RUN set -eux; \
