@@ -19,11 +19,6 @@ build-amd64: ## build linux_amd64 Docker image locally
 build-arm64: ## build linux_arm64 Docker image locally
 	docker buildx build --platform linux/arm64/v8 -t $(DOCKER_IMAGE) -t $(DOCKER_REPO):latest --load .
 
-.PHONY: build-armv7
-build-armv7: ## build linux_arm_v7 Docker image locally
-	docker buildx build --platform linux/arm/v7 -t $(DOCKER_IMAGE) -t $(DOCKER_REPO):latest --load .
-
-
 .PHONY: help
 help: ## this help
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST) | sort
