@@ -15,7 +15,7 @@
 
 # Credits: Mainly copied from https://github.com/stain/jena-docker
 
-FROM adoptopenjdk:11-jre-hotspot
+FROM eclipse-temurin:11-jre-focal
 
 ENV LANG C.UTF-8
 RUN set -eux; \
