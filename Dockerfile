@@ -55,13 +55,13 @@ WORKDIR /tmp
 # published sha512 checksum
 RUN echo "$FUSEKI_SHA512  fuseki.tar.gz" > fuseki.tar.gz.sha512
 # Download/check/unpack/move in one go (to reduce image size)
-RUN     (curl --location --silent --show-error --fail --retry-connrefused --retry 3 --output fuseki.tar.gz ${ASF_MIRROR}jena/binaries/apache-jena-fuseki-$FUSEKI_VERSION.tar.gz || \
-         curl --fail --silent --show-error --retry-connrefused --retry 3 --output fuseki.tar.gz $ASF_ARCHIVE/jena/binaries/apache-jena-fuseki-$FUSEKI_VERSION.tar.gz) && \
-        sha512sum -c fuseki.tar.gz.sha512 && \
-        tar zxf fuseki.tar.gz && \
-        mv apache-jena-fuseki* $FUSEKI_HOME && \
-        rm fuseki.tar.gz* && \
-        cd $FUSEKI_HOME && rm -rf fuseki.war && chmod 755 fuseki-server
+RUN  (curl --location --silent --show-error --fail --retry-connrefused --retry 3 --output fuseki.tar.gz ${ASF_MIRROR}jena/binaries/apache-jena-fuseki-$FUSEKI_VERSION.tar.gz || \
+      curl --fail --silent --show-error --retry-connrefused --retry 3 --output fuseki.tar.gz $ASF_ARCHIVE/jena/binaries/apache-jena-fuseki-$FUSEKI_VERSION.tar.gz) && \
+      sha512sum -c fuseki.tar.gz.sha512 && \
+      tar zxf fuseki.tar.gz && \
+      mv apache-jena-fuseki* $FUSEKI_HOME && \
+      rm fuseki.tar.gz* && \
+      cd $FUSEKI_HOME && rm -rf fuseki.war && chmod 755 fuseki-server
 
 # Test the install by testing it's ping resource. 20s sleep because Docker Hub.
 RUN  $FUSEKI_HOME/fuseki-server & \
@@ -70,10 +70,9 @@ RUN  $FUSEKI_HOME/fuseki-server & \
 
 # No need to kill Fuseki as our shell will exit after curl
 
-# As "localhost" is often inaccessible within Docker container,
-# we'll enable basic-auth with a random admin password
-# (which we'll generate on start-up)
-COPY shiro.ini $FUSEKI_HOME/shiro.ini
+# shiro.ini contains a default password. To override, start
+# container with ADMIN_PASSWORD environment variable set
+COPY shiro.ini $FUSEKI_BASE/shiro.ini
 COPY docker-entrypoint.sh /
 RUN chmod 755 /docker-entrypoint.sh
 
