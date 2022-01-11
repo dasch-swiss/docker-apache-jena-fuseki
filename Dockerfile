@@ -72,7 +72,7 @@ RUN  $FUSEKI_HOME/fuseki-server & \
 
 # shiro.ini contains a default password. To override, start
 # container with ADMIN_PASSWORD environment variable set
-COPY shiro.ini $FUSEKI_BASE/shiro.ini
+COPY shiro.ini $FUSEKI_HOME/shiro.ini
 COPY docker-entrypoint.sh /
 RUN chmod 755 /docker-entrypoint.sh
 
