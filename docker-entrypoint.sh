@@ -16,21 +16,8 @@
 
 set -e
 
-if [ ! -f "$FUSEKI_BASE/shiro.ini" ] ; then
-   # First time
-   echo "###################################"
-   echo "Initializing Apache Jena Fuseki"
-   echo ""
-   cp "$FUSEKI_HOME/shiro.ini" "$FUSEKI_BASE/shiro.ini"
-   if [ -z "$ADMIN_PASSWORD" ] ; then
-     ADMIN_PASSWORD=$(pwgen -s 15)
-     echo "Randomly generated admin password:"
-     echo ""
-     echo "admin=$ADMIN_PASSWORD"
-   fi
-   echo ""
-   echo "###################################"
- fi
+# copy shiro.ini
+cp "$FUSEKI_HOME/shiro.ini" "$FUSEKI_BASE/shiro.ini"
 
 # $ADMIN_PASSWORD can always override
 if [ -n "$ADMIN_PASSWORD" ] ; then
