@@ -63,7 +63,7 @@ RUN  (curl --location --silent --show-error --fail --retry-connrefused --retry 3
       rm fuseki.tar.gz* && \
       cd $FUSEKI_HOME && rm -rf fuseki.war && chmod 755 fuseki-server
 
-# Test the install by testing it's ping resource. 20s sleep because Docker Hub.
+# Test the install by testing it's ping resource. 30s sleep because Docker Hub.
 RUN  $FUSEKI_HOME/fuseki-server & \
      sleep 30 && \
      curl -sS --fail 'http://localhost:3030/$/ping' 
