@@ -23,6 +23,9 @@ log() {
 info() {
   log "INFO" "$1"
 }
+warn() {
+  log "WARN" "$1" >&2
+}
 error() {
   log "ERROR" "$1" >&2
 }
@@ -35,12 +38,23 @@ if [ -n "$ADMIN_PASSWORD" ] ; then
   sed -i "s/^admin=.*/admin=$ADMIN_PASSWORD/" "$FUSEKI_BASE/shiro.ini"
 fi
 
+# Check if index rebuild marker file exists
+if [ ! -n "$REBUILD_INDEX_OF_DATASET" ] && [ -f "$REBUILD_INDEX_MARKER_FILE" ] ; then
+  info "Detected index rebuild marker file ${REBUILD_INDEX_MARKER_FILE}"
+  REBUILD_INDEX_OF_DATASET="$(cat "$REBUILD_INDEX_MARKER_FILE" | sed "s/[^[:alpha:]_-]/_/g")"
+  remove_marker_file=true
+fi
+
 # Rebuild lucene index of the dataset specified
 # by REBUILD_INDEX_OF_DATASET if set
 if [ -n "$REBUILD_INDEX_OF_DATASET" ] ; then
   info "Rebuilding index of dataset ${REBUILD_INDEX_OF_DATASET}:"
   if java -cp /jena-fuseki/fuseki-server.jar jena.textindexer --desc="/fuseki/configuration/${REBUILD_INDEX_OF_DATASET}.ttl" ; then
     info "Successfully rebuilt index"
+    # Remove marker on successful rebuild
+    if [ "$remove_marker_file" = true ] && ! rm "$REBUILD_INDEX_MARKER_FILE" ; then
+      warn "Failed removing index rebuild marker file ${REBUILD_INDEX_MARKER_FILE}"
+    fi
   else
     error "Failed rebuilding index"
     exit 1
