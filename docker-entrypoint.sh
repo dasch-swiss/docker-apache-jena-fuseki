@@ -16,6 +16,17 @@
 
 set -e
 
+# Log with the same logging format as Fuseki
+log() {
+  printf "%s %-5s Entrypoint      :: %s\n" "$(date +%H:%M:%S)" "$1" "$2"
+}
+info() {
+  log "INFO" "$1"
+}
+error() {
+  log "ERROR" "$1" >&2
+}
+
 # copy shiro.ini
 cp "$FUSEKI_HOME/shiro.ini" "$FUSEKI_BASE/shiro.ini"
 
@@ -24,6 +35,19 @@ if [ -n "$ADMIN_PASSWORD" ] ; then
   sed -i "s/^admin=.*/admin=$ADMIN_PASSWORD/" "$FUSEKI_BASE/shiro.ini"
 fi
 
+# Rebuild lucene index of the dataset specified
+# by REBUILD_INDEX_OF_DATASET if set
+if [ -n "$REBUILD_INDEX_OF_DATASET" ] ; then
+  info "Rebuilding index of dataset ${REBUILD_INDEX_OF_DATASET}:"
+  if java -cp /jena-fuseki/fuseki-server.jar jena.textindexer --desc="/fuseki/configuration/${REBUILD_INDEX_OF_DATASET}.ttl" ; then
+    info "Successfully rebuilt index"
+  else
+    error "Failed rebuilding index"
+    exit 1
+  fi
+fi
+
+# Start Fueski server
 exec "$@" &
 
 # Wait until server is up
