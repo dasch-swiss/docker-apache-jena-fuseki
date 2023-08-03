@@ -20,7 +20,7 @@ To minimize layer size, there's a single RUN with curl, sha512sum, tar zxf and m
 Some files from the Apache Jena distributions are stripped, e.g., fuseki.war file.
 
 The Fuseki image includes some helper scripts to do tdb loading using fuseki-server.jar. In addition Fuseki has a [docker-entrypoint.sh](https://github.com/dasch-swiss/docker-apache-jena-fuseki/blob/main/docker-entrypoint.sh) that populates shiro.ini with the password provided as `-e ADMIN_PASSWORD` to Docker, or with a new randomly generated password that is printed the first time.  
-There is also a `REBUILD_INDEX_OF_DATASET` environment variable that makes the container rebuild Fuseki's built-in Lucene index before starting the database normally. To enable this, the value of this variable must be set to the name of the dataset whose index should be rebuilt.
+There is also a `REBUILD_INDEX_OF_DATASET` environment variable that makes the container rebuild Fuseki's built-in Lucene index before starting the database normally. To enable this, the value of this variable must be set to the name of the dataset whose index should be rebuilt. Alternatively the `REBUILD_INDEX_MARKER_FILE` variable can be set to the path of a marker file inside the container containing the aforementioned dataset name. The marker file is deleted after a successful rebuild.
 
 ## Releasing
 Releasing should be done through the Github release process, which will kick-off a Github-CI job that will release the Docker Image under the release tag.
