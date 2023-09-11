@@ -78,9 +78,12 @@ COPY docker-entrypoint.sh /
 RUN chmod 755 /docker-entrypoint.sh
 
 # Periodically check whether Fuseki is running and
-# responding to a ping
+# responding to a ping or whether text indexer is
+# running
 HEALTHCHECK --interval=15s --timeout=3s --retries=3 --start-period=30s \
-  CMD curl -sS --fail 'http://localhost:3030/$/ping' || exit 1
+  CMD curl -sS --fail 'http://localhost:3030/$/ping' || \
+      pgrep -f "jena.textindexer" >/dev/null || \
+      exit 1
 
 # Where we start our server from
 WORKDIR $FUSEKI_HOME
