@@ -48,8 +48,16 @@ fi
 # Rebuild lucene index of the dataset specified
 # by REBUILD_INDEX_OF_DATASET if set
 if [ -n "$REBUILD_INDEX_OF_DATASET" ] ; then
-  info "Rebuilding index of dataset ${REBUILD_INDEX_OF_DATASET}:"
-  if java -cp /jena-fuseki/fuseki-server.jar jena.textindexer --desc="/fuseki/configuration/${REBUILD_INDEX_OF_DATASET}.ttl" ; then
+  index_base="${INDEX_BASE:-${FUSEKI_BASE}/lucene}"
+  if [ -d "${index_base}/${REBUILD_INDEX_OF_DATASET}" ] ; then
+    info "Deleting old index data of dataset ${REBUILD_INDEX_OF_DATASET}"
+    if ! rm -r "${index_base}/${REBUILD_INDEX_OF_DATASET}" ; then
+      error "Failed deleting old index data"
+      exit 1
+    fi
+  fi
+  info "Rebuilding index of dataset ${REBUILD_INDEX_OF_DATASET}..."
+  if java -cp "${FUSEKI_HOME}/fuseki-server.jar" jena.textindexer --desc="${FUSEKI_BASE}/configuration/${REBUILD_INDEX_OF_DATASET}.ttl" ; then
     info "Successfully rebuilt index"
     # Remove marker on successful rebuild
     if [ "$remove_marker_file" = true ] && ! rm "$REBUILD_INDEX_MARKER_FILE" ; then
