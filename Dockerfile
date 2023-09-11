@@ -26,7 +26,7 @@ RUN set -eux; \
     rm -rf /var/lib/apt/lists/*
 
 
-# Update below according to https://jena.apache.org/download/ 
+# Update below according to https://jena.apache.org/download/
 # and checksum for apache-jena-fuseki-4.x.x.tar.gz.sha512
 ENV FUSEKI_SHA512 84079078b761e31658c96797e788137205fc93091ab5ae511ba80bdbec3611f4386280e6a0dc378b80830f4e5ec3188643e2ce5e1dd35edfd46fa347da4dbe17
 ENV FUSEKI_VERSION 4.9.0
@@ -66,7 +66,7 @@ RUN  (curl --location --silent --show-error --fail --retry-connrefused --retry 3
 # Test the install by testing it's ping resource. 20s sleep because Docker Hub.
 RUN  $FUSEKI_HOME/fuseki-server & \
      sleep 30 && \
-     curl -sS --fail 'http://localhost:3030/$/ping' 
+     curl -sS --fail 'http://localhost:3030/$/ping'
 
 # No need to kill Fuseki as our shell will exit after curl
 
@@ -77,9 +77,12 @@ COPY docker-entrypoint.sh /
 RUN chmod 755 /docker-entrypoint.sh
 
 # Periodically check whether Fuseki is running and
-# responding to a ping
+# responding to a ping or whether text indexer is
+# running
 HEALTHCHECK --interval=15s --timeout=3s --retries=3 --start-period=30s \
-  CMD curl -sS --fail 'http://localhost:3030/$/ping' || exit 1
+  CMD curl -sS --fail 'http://localhost:3030/$/ping' || \
+      pgrep -f "jena.textindexer" >/dev/null || \
+      exit 1
 
 # Where we start our server from
 WORKDIR $FUSEKI_HOME
