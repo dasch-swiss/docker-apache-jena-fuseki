@@ -26,7 +26,7 @@ RUN set -eux; \
     rm -rf /var/lib/apt/lists/*
 
 
-# Update below according to https://jena.apache.org/download/ 
+# Update below according to https://jena.apache.org/download/
 # and checksum for apache-jena-fuseki-4.x.x.tar.gz.sha512
 ENV FUSEKI_SHA512 84079078b761e31658c96797e788137205fc93091ab5ae511ba80bdbec3611f4386280e6a0dc378b80830f4e5ec3188643e2ce5e1dd35edfd46fa347da4dbe17
 ENV FUSEKI_VERSION 4.9.0
@@ -46,6 +46,7 @@ LABEL org.opencontainers.image.authors "Apache Jena Fuseki by https://jena.apach
 # Config and data
 VOLUME /fuseki
 ENV FUSEKI_BASE /fuseki
+ENV INDEX_BASE $FUSEKI_BASE/lucene
 
 
 # Installation folder
@@ -66,7 +67,7 @@ RUN  (curl --location --silent --show-error --fail --retry-connrefused --retry 3
 # Test the install by testing it's ping resource. 20s sleep because Docker Hub.
 RUN  $FUSEKI_HOME/fuseki-server & \
      sleep 30 && \
-     curl -sS --fail 'http://localhost:3030/$/ping' 
+     curl -sS --fail 'http://localhost:3030/$/ping'
 
 # No need to kill Fuseki as our shell will exit after curl
 
