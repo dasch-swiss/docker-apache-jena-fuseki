@@ -15,13 +15,13 @@
 
 # Credits: Mainly copied from https://github.com/stain/jena-docker
 
-FROM eclipse-temurin:17-jre-focal
+FROM eclipse-temurin:17-jre-alpine
 
 ENV LANG C.UTF-8
 RUN set -eux; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
-       bash curl ca-certificates findutils coreutils pwgen procps \
+    bash curl ca-certificates findutils coreutils pwgen procps \
     ; \
     rm -rf /var/lib/apt/lists/*
 
@@ -57,17 +57,17 @@ WORKDIR /tmp
 RUN echo "$FUSEKI_SHA512  fuseki.tar.gz" > fuseki.tar.gz.sha512
 # Download/check/unpack/move in one go (to reduce image size)
 RUN  (curl --location --silent --show-error --fail --retry-connrefused --retry 3 --output fuseki.tar.gz ${ASF_MIRROR}jena/binaries/apache-jena-fuseki-$FUSEKI_VERSION.tar.gz || \
-      curl --fail --silent --show-error --retry-connrefused --retry 3 --output fuseki.tar.gz $ASF_ARCHIVE/jena/binaries/apache-jena-fuseki-$FUSEKI_VERSION.tar.gz) && \
-      sha512sum -c fuseki.tar.gz.sha512 && \
-      tar zxf fuseki.tar.gz && \
-      mv apache-jena-fuseki* $FUSEKI_HOME && \
-      rm fuseki.tar.gz* && \
-      cd $FUSEKI_HOME && rm -rf fuseki.war && chmod 755 fuseki-server
+    curl --fail --silent --show-error --retry-connrefused --retry 3 --output fuseki.tar.gz $ASF_ARCHIVE/jena/binaries/apache-jena-fuseki-$FUSEKI_VERSION.tar.gz) && \
+    sha512sum -c fuseki.tar.gz.sha512 && \
+    tar zxf fuseki.tar.gz && \
+    mv apache-jena-fuseki* $FUSEKI_HOME && \
+    rm fuseki.tar.gz* && \
+    cd $FUSEKI_HOME && rm -rf fuseki.war && chmod 755 fuseki-server
 
 # Test the install by testing it's ping resource. 20s sleep because Docker Hub.
 RUN  $FUSEKI_HOME/fuseki-server & \
-     sleep 30 && \
-     curl -sS --fail 'http://localhost:3030/$/ping'
+    sleep 30 && \
+    curl -sS --fail 'http://localhost:3030/$/ping'
 
 # No need to kill Fuseki as our shell will exit after curl
 
@@ -81,9 +81,9 @@ RUN chmod 755 /docker-entrypoint.sh
 # responding to a ping or whether text indexer is
 # running
 HEALTHCHECK --interval=15s --timeout=3s --retries=3 --start-period=30s \
-  CMD curl -sS --fail 'http://localhost:3030/$/ping' || \
-      pgrep -f "jena.textindexer" >/dev/null || \
-      exit 1
+    CMD curl -sS --fail 'http://localhost:3030/$/ping' || \
+    pgrep -f "jena.textindexer" >/dev/null || \
+    exit 1
 
 # Where we start our server from
 WORKDIR $FUSEKI_HOME
