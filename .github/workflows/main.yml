@@ -6,10 +6,8 @@ on:
     types: [published]
 
 jobs:
-  
-  # build allways and push on release
   build:
-    name: Build allways and publish on release
+    name: Build always and publish on release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -36,4 +34,3 @@ jobs:
           platforms: linux/amd64,linux/arm64/v8
           push: ${{ github.event_name == 'release' }}
           tags: daschswiss/apache-jena-fuseki:latest, daschswiss/apache-jena-fuseki:${{ steps.get_version.outputs.VERSION }}
-
