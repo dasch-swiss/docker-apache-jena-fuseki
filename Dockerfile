@@ -66,7 +66,7 @@ RUN  (curl --location --silent --show-error --fail --retry-connrefused --retry 3
 
 # Test the install by testing it's ping resource. 20s sleep because Docker Hub.
 RUN  $FUSEKI_HOME/fuseki-server & \
-     sleep 30 && \
+     sleep 60 && \
      curl -sS --fail 'http://localhost:3030/$/ping'
 
 # No need to kill Fuseki as our shell will exit after curl
