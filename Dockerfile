@@ -19,17 +19,17 @@ FROM eclipse-temurin:17-jre-focal
 
 ENV LANG C.UTF-8
 RUN set -eux; \
-    apt-get update; \
-    apt-get install -y --no-install-recommends \
-       bash curl ca-certificates findutils coreutils pwgen procps \
-    ; \
-    rm -rf /var/lib/apt/lists/*
+  apt-get update; \
+  apt-get install -y --no-install-recommends \
+  bash curl ca-certificates findutils coreutils pwgen procps \
+  ; \
+  rm -rf /var/lib/apt/lists/*
 
 
 # Update below according to https://jena.apache.org/download/
 # and checksum for apache-jena-fuseki-4.x.x.tar.gz.sha512
-ENV FUSEKI_SHA512 84079078b761e31658c96797e788137205fc93091ab5ae511ba80bdbec3611f4386280e6a0dc378b80830f4e5ec3188643e2ce5e1dd35edfd46fa347da4dbe17
-ENV FUSEKI_VERSION 4.9.0
+ENV FUSEKI_SHA512 a4be52cc5f7f8767e362f893f28721f2887a3544ed779cd58fe0b32733575d97411b5a3bc2243995d6408e545bdefc5ab41c00b2c5d074df1dc0ca5063db5f83
+ENV FUSEKI_VERSION 4.10.0
 # No need for https due to sha512 checksums below
 ENV ASF_MIRROR http://www.apache.org/dyn/mirrors/mirrors.cgi?action=download&filename=
 ENV ASF_ARCHIVE http://archive.apache.org/dist/
@@ -57,17 +57,17 @@ WORKDIR /tmp
 RUN echo "$FUSEKI_SHA512  fuseki.tar.gz" > fuseki.tar.gz.sha512
 # Download/check/unpack/move in one go (to reduce image size)
 RUN  (curl --location --silent --show-error --fail --retry-connrefused --retry 3 --output fuseki.tar.gz ${ASF_MIRROR}jena/binaries/apache-jena-fuseki-$FUSEKI_VERSION.tar.gz || \
-      curl --fail --silent --show-error --retry-connrefused --retry 3 --output fuseki.tar.gz $ASF_ARCHIVE/jena/binaries/apache-jena-fuseki-$FUSEKI_VERSION.tar.gz) && \
-      sha512sum -c fuseki.tar.gz.sha512 && \
-      tar zxf fuseki.tar.gz && \
-      mv apache-jena-fuseki* $FUSEKI_HOME && \
-      rm fuseki.tar.gz* && \
-      cd $FUSEKI_HOME && rm -rf fuseki.war && chmod 755 fuseki-server
+  curl --fail --silent --show-error --retry-connrefused --retry 3 --output fuseki.tar.gz $ASF_ARCHIVE/jena/binaries/apache-jena-fuseki-$FUSEKI_VERSION.tar.gz) && \
+  sha512sum -c fuseki.tar.gz.sha512 && \
+  tar zxf fuseki.tar.gz && \
+  mv apache-jena-fuseki* $FUSEKI_HOME && \
+  rm fuseki.tar.gz* && \
+  cd $FUSEKI_HOME && rm -rf fuseki.war && chmod 755 fuseki-server
 
 # Test the install by testing it's ping resource. 20s sleep because Docker Hub.
 RUN  $FUSEKI_HOME/fuseki-server & \
-     sleep 30 && \
-     curl -sS --fail 'http://localhost:3030/$/ping'
+  sleep 30 && \
+  curl -sS --fail 'http://localhost:3030/$/ping'
 
 # No need to kill Fuseki as our shell will exit after curl
 
@@ -82,8 +82,8 @@ RUN chmod 755 /docker-entrypoint.sh
 # running
 HEALTHCHECK --interval=15s --timeout=3s --retries=3 --start-period=30s \
   CMD curl -sS --fail 'http://localhost:3030/$/ping' || \
-      pgrep -f "jena.textindexer" >/dev/null || \
-      exit 1
+  pgrep -f "jena.textindexer" >/dev/null || \
+  exit 1
 
 # Where we start our server from
 WORKDIR $FUSEKI_HOME
