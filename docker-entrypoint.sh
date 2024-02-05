@@ -70,11 +70,4 @@ if [ -n "$REBUILD_INDEX_OF_DATASET" ] ; then
 fi
 
 # Start Fueski server
-exec "$@" &
-
-# Wait until server is up
-while [[ $(curl -I http://localhost:3030 2>/dev/null | head -n 1 | cut -d$' ' -f2) != '200' ]]; do
-  sleep 1s
-done
-
-wait
+exec "$@"
