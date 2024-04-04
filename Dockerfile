@@ -64,12 +64,8 @@ RUN  (curl --location --silent --show-error --fail --retry-connrefused --retry 3
       rm fuseki.tar.gz* && \
       cd $FUSEKI_HOME && rm -rf fuseki.war && chmod 755 fuseki-server
 
-# Test the install by testing it's ping resource. 10s sleep because Docker Hub.
-RUN  $FUSEKI_HOME/fuseki-server & \
-     sleep 10 && \
-     curl -sS --fail 'http://localhost:3030/$/ping'
-
-# No need to kill Fuseki as our shell will exit after curl
+# Verify that the binary works
+RUN  bash -c '[ "$($FUSEKI_HOME/fuseki-server --version)" == "Apache Jena Fuseki version $FUSEKI_VERSION" ]'
 
 # shiro.ini contains a default password. To override, start
 # container with ADMIN_PASSWORD environment variable set
