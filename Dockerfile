@@ -15,7 +15,7 @@
 
 # Credits: Mainly copied from https://github.com/stain/jena-docker
 
-FROM eclipse-temurin:17-jre-focal
+FROM eclipse-temurin:21-jre-jammy
 
 ENV LANG C.UTF-8
 RUN set -eux; \
