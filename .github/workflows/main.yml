@@ -43,6 +43,7 @@ jobs:
     needs: build
     steps:
       - name: Trigger deployment to DEV
+        if: ${{ github.event_name == 'release' }}
         env:
           IMAGE_TAG: ${{ needs.build.outputs.tag }}
           JENKINS_BASIC_AUTH_USER: ${{ secrets.JENKINS_BASIC_AUTH_USER }}
@@ -52,4 +53,3 @@ jobs:
           curl -f -u "${JENKINS_BASIC_AUTH_USER}:${JENKINS_BASIC_AUTH_PASS}" \
                -X POST "${JENKINS_DEV_WEBHOOK}" \
                -d "Service=db&Version=${IMAGE_TAG}"
-               
