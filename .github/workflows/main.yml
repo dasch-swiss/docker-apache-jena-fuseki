@@ -10,7 +10,7 @@ jobs:
     name: Build always and publish on release
     runs-on: ubuntu-latest
     outputs:
-      tag: ${{ steps.get_version.outputs.tag }}
+      tag: ${{ steps.get_version.outputs.VERSION }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -52,3 +52,4 @@ jobs:
           curl -f -u "${JENKINS_BASIC_AUTH_USER}:${JENKINS_BASIC_AUTH_PASS}" \
                -X POST "${JENKINS_DEV_WEBHOOK}" \
                -d "Service=db&Version=${IMAGE_TAG}"
+               
