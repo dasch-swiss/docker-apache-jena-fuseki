@@ -38,6 +38,12 @@ if [ -n "$ADMIN_PASSWORD" ] ; then
   sed -i "s/^admin=.*/admin=$ADMIN_PASSWORD/" "$FUSEKI_BASE/shiro.ini"
 fi
 
+# copy dsp-repo.ttl
+if [ ! -e "$FUSEKI_BASE/configuration/dsp-repo.ttl" ]; then
+  mkdir -p "$FUSEKI_BASE/configuration"
+  cp "$FUSEKI_HOME/dsp-repo.ttl" "$FUSEKI_BASE/configuration/dsp-repo.ttl"
+fi
+
 # Check if index rebuild marker file exists
 if [ ! -n "$REBUILD_INDEX_OF_DATASET" ] && [ -f "$REBUILD_INDEX_MARKER_FILE" ] ; then
   info "Detected index rebuild marker file ${REBUILD_INDEX_MARKER_FILE}"

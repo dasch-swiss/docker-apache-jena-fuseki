@@ -71,7 +71,7 @@ RUN  bash -c '[ "$($FUSEKI_HOME/fuseki-server --version)" == "Apache Jena Fuseki
 COPY shiro.ini $FUSEKI_HOME/shiro.ini
 
 # Create built-in database config
-COPY dsp-repo.ttl $FUSEKI_BASE/configuration/dsp-repo.ttl
+COPY dsp-repo.ttl $FUSEKI_HOME/dsp-repo.ttl
 
 # Create entrypoint
 COPY docker-entrypoint.sh /
