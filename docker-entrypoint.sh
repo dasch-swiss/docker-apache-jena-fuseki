@@ -69,5 +69,21 @@ if [ -n "$REBUILD_INDEX_OF_DATASET" ] ; then
   fi
 fi
 
+# Change JVM_ARGS to address warnings in Java 21+:
+#   WARNING: A restricted method in java.lang.foreign.Linker has been called
+#   WARNING: java.lang.foreign.Linker::downcallHandle has been called by the unnamed module
+#   WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for this module
+#   WARN  VectorizationProvider :: Java vector incubator module is not readable. For optimal vector performance, pass '--add-modules jdk.incubator.vector' to enable Vector API.
+# See also:
+#   https://github.com/apache/jena/issues/2533
+#   https://github.com/apache/jena/pull/2782
+#   https://github.com/apache/jena/blob/c14193e528a86e97f0ab86cf3827d6ba9ac60296/jena-text/pom.xml#L32-L39
+if [ -z "$JVM_ARGS" ]; then
+  # this is the default if not set, see /jena-fuseki/fuseki-server wrapper
+  JVM_ARGS="-Xmx4G"
+fi
+export JVM_ARGS="${JVM_ARGS} --enable-native-access=ALL-UNNAMED --add-modules=jdk.incubator.vector"
+info "JVM_ARGS: $JVM_ARGS"
+
 # Start Fueski server
 exec "$@"
