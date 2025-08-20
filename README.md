@@ -8,6 +8,8 @@ dasch-swiss/apache-jena-fuseki
 
 Note that although these Docker images are based on the official Apache Jena Fuseki releases and do not alter them in any way, they do not constitute official releases from the Apache Software Foundation.
 
+As of version `5.5.0-1`, the database comes with a pre-configured TDB2 dataset called `dsp-repo` and a Lucene text index. For more details, see the [dsp-repo.ttl](dsp-repo.ttl) dataset configuration file.
+
 ## Dockerfile overview
 The Dockerfile uses the official openjdk:11-jre-slim-buster base image, which is based on the [debian](https://hub.docker.com/_/debian/):buster-slim image; this clocks in at about 69 MB.
 
@@ -19,7 +21,7 @@ To minimize layer size, there's a single RUN with curl, sha512sum, tar zxf and m
 
 Some files from the Apache Jena distributions are stripped, e.g., fuseki.war file.
 
-The Fuseki image includes some helper scripts to do tdb loading using fuseki-server.jar. In addition Fuseki has a [docker-entrypoint.sh](https://github.com/dasch-swiss/docker-apache-jena-fuseki/blob/main/docker-entrypoint.sh) that populates shiro.ini with the password provided as `-e ADMIN_PASSWORD` to Docker, or with a new randomly generated password that is printed the first time.  
+The Fuseki image includes some helper scripts to do tdb loading using fuseki-server.jar. In addition Fuseki has a [docker-entrypoint.sh](https://github.com/dasch-swiss/docker-apache-jena-fuseki/blob/main/docker-entrypoint.sh) that populates [shiro.ini](shiro.ini) with the password provided as `-e ADMIN_PASSWORD` to Docker, or with a new randomly generated password that is printed the first time. The [dsp-repo.ttl](dsp-repo.ttl) dataset configuration is used to set up the default `dsp-repo` dataset through the `$FUSEKI_BASE/configuration/` [directory mechanism](https://jena.apache.org/documentation/fuseki2/fuseki-configuration.html).    
 There is also a `REBUILD_INDEX_OF_DATASET` environment variable that makes the container rebuild Fuseki's built-in Lucene index before starting the database normally. To enable this, the value of this variable must be set to the name of the dataset whose index should be rebuilt. Alternatively the `REBUILD_INDEX_MARKER_FILE` variable can be set to the path of a marker file inside the container containing the aforementioned dataset name. The marker file is deleted after a successful rebuild. The index data is assumed to be located at $INDEX_BASE/<dataset> (default: /fuseki/lucene/<dataset>).
 
 ## Releasing

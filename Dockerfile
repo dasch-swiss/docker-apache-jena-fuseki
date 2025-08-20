@@ -48,7 +48,6 @@ VOLUME /fuseki
 ENV FUSEKI_BASE /fuseki
 ENV INDEX_BASE $FUSEKI_BASE/lucene
 
-
 # Installation folder
 ENV FUSEKI_HOME /jena-fuseki
 
@@ -70,6 +69,11 @@ RUN  bash -c '[ "$($FUSEKI_HOME/fuseki-server --version)" == "Apache Jena Fuseki
 # shiro.ini contains a default password. To override, start
 # container with ADMIN_PASSWORD environment variable set
 COPY shiro.ini $FUSEKI_HOME/shiro.ini
+
+# Create built-in database config
+COPY dsp-repo.ttl $FUSEKI_HOME/dsp-repo.ttl
+
+# Create entrypoint
 COPY docker-entrypoint.sh /
 RUN chmod 755 /docker-entrypoint.sh
 
