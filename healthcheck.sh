@@ -16,7 +16,7 @@ fi
 healthcheck_user='healthcheck'
 healthcheck_password="$(cat "/var/tmp/healthcheck_password")"
 if ! curl -s --fail 'http://localhost:3030/$/datasets/dsp-repo' --config - \
-     <<< "--user '${healthcheck_user}:${healthcheck_password}'" > /dev/null
+     <<< '--user "'"${healthcheck_user}:${healthcheck_password}"'"' > /dev/null
 then
   warn "Dataset 'dsp-repo' is missing or unavailable"
   exit 1
