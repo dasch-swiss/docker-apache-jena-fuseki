@@ -35,7 +35,17 @@ cp "$FUSEKI_HOME/shiro.ini" "$FUSEKI_BASE/shiro.ini"
 
 # $ADMIN_PASSWORD can always override
 if [ -n "$ADMIN_PASSWORD" ] ; then
-  sed -i "s/^admin=.*/admin=$ADMIN_PASSWORD/" "$FUSEKI_BASE/shiro.ini"
+  sed -i "s/^admin=[^,]\+/admin=$ADMIN_PASSWORD/" "$FUSEKI_BASE/shiro.ini"
+fi
+
+# generate password for healthcheck
+openssl rand -hex 32 > "/var/tmp/healthcheck_password"
+sed -i "s/^healthcheck=[^,]\+/healthcheck=$(cat "/var/tmp/healthcheck_password")/" "$FUSEKI_BASE/shiro.ini"
+
+# password placeholder sanity check
+if grep -Fq "=pw" "$FUSEKI_BASE/shiro.ini"; then
+  error "Password placeholder was not replaced!"
+  exit 1
 fi
 
 # copy dsp-repo.ttl

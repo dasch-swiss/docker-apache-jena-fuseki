@@ -77,11 +77,13 @@ COPY dsp-repo.ttl $FUSEKI_HOME/dsp-repo.ttl
 COPY docker-entrypoint.sh /
 RUN chmod 755 /docker-entrypoint.sh
 
-# Periodically check whether Fuseki is running and
-# responding to a ping or whether text indexer is
-# running
+# Create healthcheck
+COPY healthcheck.sh /
+RUN chmod 755 /healthcheck.sh
+
+# Periodically check whether Fuseki is running and dsp-repo exists
 HEALTHCHECK --interval=15s --timeout=3s --retries=3 --start-period=30s \
-  CMD curl -sS --fail 'http://localhost:3030/$/ping' || exit 1
+  CMD /healthcheck.sh || exit 1
 
 # Where we start our server from
 WORKDIR $FUSEKI_HOME
