@@ -85,6 +85,12 @@ RUN chmod 755 /healthcheck.sh
 HEALTHCHECK --interval=15s --timeout=3s --retries=3 --start-period=30s \
   CMD /healthcheck.sh || exit 1
 
+# Add otel java agent and pyroscope extension
+ARG OTEL_AGENT_VERSION=v2.21.0
+ARG OTEL_PYROSCOPE_VERSION=v1.0.4
+ADD "https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/${OTEL_AGENT_VERSION}/opentelemetry-javaagent.jar" "/usr/local/lib/opentelemetry-javaagent.jar"
+ADD "https://github.com/grafana/otel-profiling-java/releases/download/${OTEL_PYROSCOPE_VERSION}/pyroscope-otel.jar" "/usr/local/lib/pyroscope-otel.jar"
+
 # Where we start our server from
 WORKDIR $FUSEKI_HOME
 EXPOSE 3030
