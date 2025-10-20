@@ -98,7 +98,7 @@ if [ -z "$JVM_ARGS" ]; then
   # this is the default if not set, see /jena-fuseki/fuseki-server wrapper
   JVM_ARGS="-Xmx4G"
 fi
-export JVM_ARGS="${JVM_ARGS} --enable-native-access=ALL-UNNAMED --add-modules=jdk.incubator.vector"
+#export JVM_ARGS="${JVM_ARGS} --enable-native-access=ALL-UNNAMED --add-modules=jdk.incubator.vector"
 info "JVM_ARGS: $JVM_ARGS"
 
 # Start Fueski server
